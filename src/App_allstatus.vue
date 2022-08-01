@@ -1,0 +1,232 @@
+<template>
+  <!-- <NavigationItem :devs="devs" /> -->
+  <div class="container">
+    <nav class="navbar bg-dark">
+      <div class="container">
+        <a href="/" class="navbar-brand d-flex align-items-center">
+          <img src="./assets/elogo.png" alt="" />
+        </a>
+      </div>
+    </nav>
+    <div class="main container">
+      <div class="row">
+        <div class="col-lg-2 col-4">
+          <div class="sidebar flex-shrink-0 p-3 bg-white">
+            <div class="grp-title">
+              <a href="/">Developers</a>
+            </div>
+            <!--nav-->
+            <div class="grp-list">
+              <ul>
+                <li
+                  v-for="dev in devs"
+                  :key="dev.index"
+                  class="grp-item"
+                  :class="{ active: isActive }"
+                  @click="
+                    [getPostData(dev.id, dev.firstName, dev.lastName), task()]
+                  "
+                >
+                  {{ dev.firstName }} {{ dev.lastName }}
+                </li>
+              </ul>
+            </div>
+            <!--nav-->
+          </div>
+        </div>
+        <div class="col-lg-10 col-8">
+          <div class="task-container">
+            <!-- <div v-for="id in ids" :key="id.index"> -->
+            <!-- <div :html="newtask">{{ alltasks.title }}</div> -->
+            <div id="newtask">
+              <ul v-for="task in tasks" :key="task.index">
+                <li>
+                  <a :href="task.permalink">{{ task.title }}</a>
+                  <span>{{ task.responsibleIds }}</span>
+                </li>
+              </ul>
+            </div>
+            <!-- </div> -->
+            <TasksList
+              @updateTasks="update"
+              :id="id"
+              :userFName="userFName"
+              :userLName="userLName"
+              :usertasks="usertasks"
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</template>
+
+<script>
+import axios from "axios";
+// import NavigationItem from "./components/NavigationItem.vue";
+import TasksList from "./components/UserTasksList.vue";
+
+export default {
+  name: "App",
+  data() {
+    return {
+      token:
+        "eyJ0dCI6InAiLCJhbGciOiJIUzI1NiIsInR2IjoiMSJ9.eyJkIjoie1wiYVwiOjM4NDYzOTMsXCJpXCI6ODIzMzkxNixcImNcIjo0NjMyODc0LFwidVwiOjk1OTM4MTIsXCJyXCI6XCJVU1wiLFwic1wiOltcIldcIixcIkZcIixcIklcIixcIlVcIixcIktcIixcIkNcIixcIkRcIixcIk1cIixcIkFcIixcIkxcIixcIlBcIl0sXCJ6XCI6W10sXCJ0XCI6MH0iLCJpYXQiOjE2NTI3NTk5MDl9.PKRcoVPuVgGbvcDwlNPMUQi_HDXtK-uBcbMRaOiL5Wk",
+      uri: "https://www.wrike.com/api/v4/",
+      devs: null,
+      alltasks: "",
+      usertasks: [],
+      newtask: "",
+      ids: "",
+      id: "",
+      userFName: "",
+      userLName: "",
+      title: "",
+      tasks: "",
+      isActive: false,
+    };
+  },
+  components: {
+    // NavigationItem,
+    TasksList,
+  },
+  created() {
+    fetch("./data.json")
+      .then((response) => response.json())
+      .then((response) => {
+        this.devs = response.dev.flat();
+
+        var id = this.devs.map((arr) => arr.id);
+        console.log(id);
+
+        var today = new Date().toISOString().slice(0, 10);
+
+        axios
+          .get(
+            this.uri + "tasks?responsibles=[" + id + "]&scheduledDate=" + today,
+            {
+              headers: {
+                Authorization: "Bearer " + this.token,
+              },
+            }
+          )
+          .then((response) => {
+            console.log(response.data);
+            var alltasks = response.data.data;
+            var tID = alltasks.map((tID) => tID.id);
+            console.log(tID);
+
+            axios
+              .get(this.uri + "tasks/" + tID, {
+                headers: {
+                  Authorization: "Bearer " + this.token,
+                },
+              })
+              .then((response) => {
+                this.tasks = response.data.data;
+                var resID = this.tasks.map((resID) => resID.responsibleIds);
+                var resUser = this.devs.find((item) => item.id === resID);
+                console.log(resID);
+                console.log(resUser);
+              });
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+
+    axios
+      .get("https://www.wrike.com/api/v4/groups/KX724IUQ", {
+        headers: {
+          Authorization: "Bearer " + this.token,
+        },
+      })
+      .then((response) => {
+        const data = response.data.data;
+        this.title = data.map((dev) => dev.title);
+        // console.log(this.title);
+        // let arr = [];
+        this.ids = data.map((arr) => arr.memberIds);
+        // console.log(this.ids[0].flat().length);
+        // console.log("id" + ids.flat().length);
+        var arrlen = this.ids[0].flat();
+        // const devlen = [];
+        for (var i = 0; i < arrlen.length; i++) {
+          console.log(arrlen);
+          axios
+            .get("https://www.wrike.com/api/v4/contacts/" + arrlen[i], {
+              headers: {
+                Authorization: "Bearer " + this.token,
+              },
+            })
+            .then((response) => {
+              let d = response.data;
+              let data = d.data;
+              // this.devs = data;
+              // this.devs = data.map((r) => r.firstName);
+              // console.log(Object.assign({}, this.devs));
+              console.log(this.data);
+              const de = {
+                mid: data.map((md) => md.id),
+                fname: data.map((fn) => fn.firstName),
+                lname: data.map((ln) => ln.lastName),
+              };
+              // console.log(JSON.parse(JSON.stringify(de)));
+              this.dev = JSON.parse(JSON.stringify(de));
+              // return de;
+            })
+            .catch((error) => {
+              console.log(error);
+            });
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  },
+  methods: {
+    getPostData(id, fName, lName) {
+      var today = new Date().toISOString().slice(0, 10);
+      console.log(today);
+      axios
+        .get(
+          this.uri + "tasks?responsibles=[" + id + "]&scheduledDate=" + today,
+          {
+            headers: {
+              Authorization: "Bearer " + this.token,
+            },
+          }
+        )
+        .then((response) => {
+          console.log(response.data);
+          this.usertasks = response.data.data;
+          var status = this.usertasks.filter(
+            (stat) => stat.status === "Active"
+          );
+          console.log(status);
+          this.id = id;
+          this.userFName = fName;
+          this.userLName = lName;
+          console.log(id, fName, lName);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    },
+    task() {
+      document.getElementById("newtask").style.display = "none";
+      this.isActive = !this.isActive;
+    },
+    update(usertasks) {
+      this.usertasks = usertasks;
+    },
+  },
+};
+</script>
+
+<style lang="scss">
+@import "./styles/global.scss";
+</style>

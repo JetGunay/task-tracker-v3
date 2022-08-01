@@ -4,11 +4,15 @@
     "module": "esnext",
     "baseUrl": "./",
     "moduleResolution": "node",
+    "jsx": "preserve",
     "paths": {
       "@/*": [
         "src/*"
       ]
     },
+    // "vueCompilerOptions": {
+    //   "experimentalDisableTemplateSupport": true
+    // },
     "lib": [
       "esnext",
       "dom",

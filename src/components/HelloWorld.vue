@@ -92,6 +92,7 @@ export default {
   props: {
     msg: String,
   },
+  methods: {},
 };
 </script>
 

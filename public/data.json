@@ -1,0 +1,57 @@
+{
+  "tasks": [
+    {
+      "id": 1,
+      "name": "1.0 Copy",
+      "sub": ["1.01 Copy  - Creation", "1.02 Copy - Internal Amends", "1.03 Copy - External Amends"],
+      "rev": ["1.1 Stakeholder Copy Review"],
+      "req": ["Introduction Copy", "Reminder Copy"]
+    },
+    {
+      "id": 2,
+      "name": "2.0 Design",
+      "sub": ["2.01 Design Creation", "2.02 Design Internal Amends", "2.03 Design External Amends", "2.04 Design Asset Creation"],
+      "rev": ["2.1 Stakeholder Design Review", "2.2 Stakeholder Design Assets Review"],
+      "req": ["Desgin Conceptualization", "Design Production"]
+    },
+    {
+      "id": 3,
+      "name": "3.0 Motion",
+      "sub": ["3.01 Motion Creation", "3.02 Motion Internal Amends", "3.03 Motion External Amends"],
+      "rev": ["3.1 Stakeholder Motion Review"],
+      "req": ["Motion GIFs"]
+    },
+    {
+      "id": 4,
+      "name": "4.0 Dev",
+      "sub": ["4.01 Dev Setup", "4.02 Dev Internal Amends", "4.03 Dev External Amends"],
+      "rev": ["4.1 Stakeholder Dev Review"],
+      "req": ["Dev Rest ID", "Dev Build / Publish"]
+    },
+    {
+      "id": 5,
+      "name": "5.0 Delivery",
+      "sub": [],
+      "rev": ["5.1 Campaign Start Date"],
+      "req": []
+    }
+  ],
+  "rev": [
+    {
+      "id": 1,
+      "name": ["Stakeholder Copy Review"]
+    },
+    {
+      "id": 2,
+      "name": ["Stakeholder Design Review", "Stakeholder Design Assets Review"]
+    },
+    {
+      "id": 3,
+      "name": ["Stakeholder Motion Review"]
+    },
+    {
+      "id": 4,
+      "name": ["Stakeholder Dev Review"]
+    }
+  ]
+}
